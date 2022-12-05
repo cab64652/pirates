@@ -1,47 +1,79 @@
-﻿using Pirates.Game.Casting;
-using Pirates.Game.Directing;
-using Pirates.Game.Scripting;
-using Pirates.Game.Services;
+﻿using Byui.Games.Casting;
+using Byui.Games.Directing;
+using Byui.Games.Scripting;
+using Byui.Games.Services;
 
 
-namespace Pirates 
+namespace Pirates
 {
     /// <summary>
-    /// The program's entry point.
+    /// The entry point for the program.
     /// </summary>
-    class Program
+    /// <remarks>
+    /// The purpose of this program is to demonstrate how Actors, Actions, Services and a Director 
+    /// work together to scroll a world while the player moves.
+    /// </remarks>
+    internal class Program
     {
-        /// <summary>
-        /// Starts the program using the given arguments.
-        /// </summary>
-        /// <param name="args">The given arguments.</param>
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Point start1 = new Point(Constants.MAX_X / 2, Constants.MAX_Y / 2);
-            Color color1 = Constants.GREEN;
+            // Instantiate a service factory for other objects to use.
+            IServiceFactory serviceFactory = new RaylibServiceFactory();
 
-            Point start2 = new Point(Constants.MAX_X / 4, Constants.MAX_Y / 4);
-            Color color2 = Constants.RED;
+            // Instantiate the actors that are used in this example.
+            Label instructions = new Label();
+            instructions.Display("'w', 's', 'a', 'd' to move");
+            instructions.MoveTo(25, 25);
 
-            // create the cast
-            Cast cast = new Cast();
-            cast.AddActor("cycle1", new Cycle(start1, color1));
-            cast.AddActor("cycle2", new Cycle(start2, color2));
+            Label status = new Label();
+            status.Display("x:-, y:-");
+            status.MoveTo(25, 55);
+            
+            Actor player = new Actor();
+            player.SizeTo(50, 50);
+            player.MoveTo(640, 480);
+            player.Tint(Color.Brown());
 
-            // create the services
-            KeyboardService keyboardService = new KeyboardService();
-            VideoService videoService = new VideoService(false);
-           
-            // create the script
-            Script script = new Script();
-            script.AddAction("input", new ControlActorsAction(keyboardService));
-            script.AddAction("update", new MoveActorsAction());
-            script.AddAction("update", new HandleCollisionsAction());
-            script.AddAction("output", new DrawActorsAction(videoService));
+            Actor obstacle = new Actor();
+            obstacle.SizeTo(150, 150);
+            obstacle.MoveTo(440, 280);
+            obstacle.Tint(Color.Green());
 
-            // start the game
-            Director director = new Director(videoService);
-            director.StartGame(cast, script);
+            Actor screen = new Actor();
+            screen.SizeTo(640, 480);
+            screen.MoveTo(0, 0);
+
+            Actor world = new Actor();
+            world.SizeTo(1280, 960);
+            world.MoveTo(0, 0);
+            world.Tint(Color.Blue());
+
+            Camera camera = new Camera(player, screen, world);
+            
+            // Instantiate the actions that use the actors.
+            SteerPlayerAction steerPlayerAction = new SteerPlayerAction(serviceFactory);
+            MovePlayerAction movePlayerAction = new MovePlayerAction();
+            UpdateStatusAction updateStatusAction = new UpdateStatusAction();
+            DrawActorsAction drawActorsAction = new DrawActorsAction(serviceFactory);
+            RotateActorAction rotateActorAction = new RotateActorAction(serviceFactory);
+
+            // Instantiate a new scene, add the actors and actions.
+            Scene scene = new Scene();
+            scene.AddActor("instructions", instructions);
+            scene.AddActor("status", status);
+            scene.AddActor("player", player);
+            scene.AddActor("obstacle", obstacle);
+            scene.AddActor("camera", camera);
+            
+            scene.AddAction(Phase.Input, steerPlayerAction);
+            scene.AddAction(Phase.Input, rotateActorAction);
+            scene.AddAction(Phase.Update, movePlayerAction);
+            scene.AddAction(Phase.Update, updateStatusAction);
+            scene.AddAction(Phase.Output, drawActorsAction);
+
+            // Start the game.
+            Director director = new Director(serviceFactory);
+            director.Direct(scene);
         }
     }
 }
