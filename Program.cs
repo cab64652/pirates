@@ -6,6 +6,7 @@ using Example.Scenes.Title;
 
 
 namespace Pirates
+{
     /// <summary>
     /// The entry point for the program.
     /// </summary>
