@@ -26,11 +26,11 @@ namespace Pirates
                 Actor player = scene.GetFirstActor("player");
 
                 // rotate left or right based on key pressed
-                if (_keyboardService.IsKeyDown(KeyboardKey.Left))
+                if (_keyboardService.IsKeyDown(KeyboardKey.S))
                 {
                     player.Rotate(-2);
                 }
-                else if (_keyboardService.IsKeyDown(KeyboardKey.Right))
+                else if (_keyboardService.IsKeyDown(KeyboardKey.D))
                 {
                     player.Rotate(2);
                 }
