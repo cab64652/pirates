@@ -27,6 +27,7 @@ namespace Pirates
                 Label instructions = scene.GetFirstActor<Label>("instructions");
                 Actor player = scene.GetFirstActor("player");
                 Actor obstacle = scene.GetFirstActor("obstacle");
+                Actor enemy = scene.GetFirstActor("enemy");
                 Label status = scene.GetFirstActor<Label>("status");
 
                 // Draw the actors on the screen. Note we have provided the camera as a second 
@@ -37,6 +38,7 @@ namespace Pirates
                 _videoService.Draw(instructions);
                 _videoService.Draw(player, camera);
                 _videoService.Draw(obstacle, camera);
+                _videoService.Draw(enemy, camera);
                 _videoService.Draw(status);
                 _videoService.FlushBuffer();
             }
