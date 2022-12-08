@@ -36,12 +36,12 @@ namespace Pirates
 
             Actor obstacle = new Actor();
             obstacle.SizeTo(150, 150);
-            obstacle.MoveTo(440, 280);
+            obstacle.MoveTo(340, 280);
             obstacle.Tint(Color.Green());
 
             Actor enemy = new Actor();
             enemy.SizeTo(50, 50);
-            enemy.MoveTo(550, 550);
+            enemy.MoveTo(50, 50);
             enemy.Tint(Color.Red());
 
             Actor screen = new Actor();
