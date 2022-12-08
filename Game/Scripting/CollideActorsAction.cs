@@ -25,7 +25,8 @@ namespace Pirates
                 // get the actors from the cast
                 Actor player = scene.GetFirstActor("player");
                 Actor obstacle = scene.GetFirstActor("obstacle");
-                
+                Actor enemy = scene.GetFirstActor("enemy");
+
                 // detect a collision between the actors.
                 if (obstacle.Overlaps(player))
                 {
@@ -36,6 +37,17 @@ namespace Pirates
                 {
                     // otherwise, just make it the original color
                     obstacle.Tint(Color.Green());
+                }
+
+                if (enemy.Overlaps(player))
+                {
+                    // resolve by changing the actor's color to something else
+                    player.Tint(Color.Red());
+                }
+                else
+                {
+                    // otherwise, just make it the original color
+                    player.Tint(Color.Brown());
                 }
             }
             catch (Exception exception)
